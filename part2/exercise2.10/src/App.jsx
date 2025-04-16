@@ -1,16 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Search from './components/search'
 import Entryform from './components/entryform'
 import Entrylist from './components/entryList'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name : "Arto Hellas", phone : "3q452354"}]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
-  const [newPhone, setPhone] = useState('');
+  const [newNumber, setNumber] = useState('');
   const [search, setSearch] = useState('');
+
+  useEffect(() => {axios
+    .get('http://localhost:3003/persons')
+    .then( response => {
+      setPersons(response.data)
+    })}
+  
+  ,[])
 
   const addEntry = (event) => {
     event.preventDefault()
@@ -18,8 +27,8 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       alert(message)
     } else{
-      setPersons(persons.concat({ name : newName, phone: newPhone, id : String(persons.length + 1)}))
-      setPhone
+      setPersons(persons.concat({ name : newName, number: newNumber, id : String(persons.length + 1)}))
+      setNumber
     }
     }
 
@@ -28,9 +37,9 @@ const App = () => {
     setNewName(event.target.value)
   }
 
-  const handleNewPhoneChange = (event) => {
+  const handleNewNumberChange = (event) => {
     console.log(event.target.value)
-    setPhone(event.target.value)
+    setNumber(event.target.value)
   }
 
   const handleSearch = (event) => {
@@ -42,11 +51,11 @@ const App = () => {
   return (
     <div>
       <div>debug: {newName}</div>
-      <h2>Phonebook</h2>
+      <h2>Numberbook</h2>
       <Search search={search} handleSearch={handleSearch}/>
       <h2>add a new</h2>
       <Entryform addEntry={addEntry} newName={newName} handleNewNameChange={handleNewNameChange} 
-        newPhone={newPhone} handleNewPhoneChange={handleNewPhoneChange}/>
+        newNumber={newNumber} handleNewNumberChange={handleNewNumberChange}/>
         <h2>Numbers</h2>
       <Entrylist namesToShow={namesToShow}/>
     </div>

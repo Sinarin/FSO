@@ -1,4 +1,4 @@
-const Entryform = ({addEntry, newName, handleNewNameChange, newPhone, handleNewPhoneChange}) => {
+const Entryform = ({addEntry, newName, handleNewNameChange, newNumber, handleNewNumberChange}) => {
     return (
         <form onSubmit={addEntry}>
         <div>
@@ -11,8 +11,8 @@ const Entryform = ({addEntry, newName, handleNewNameChange, newPhone, handleNewP
         <div>
           Phone Number:
           <input
-          value={newPhone}
-          onChange={handleNewPhoneChange}
+          value={newNumber}
+          onChange={handleNewNumberChange}
           />
         </div>
         <div>
