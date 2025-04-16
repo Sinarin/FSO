@@ -1,31 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {useState, useEffect} from 'react'
 import './App.css'
+import axios from 'axios'
 import Note from './components/Notes'
 
-const startingNotes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    important: true,
-  },
-  {
-    id: 2,
-    content: "Browser can execute only Javascript",
-    important: false,
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    importnat: false,
-  }
-]
 
-function App (props) {
-  const [notes, setNotes] = useState(startingNotes)
+
+const App = () => {
+  const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
+
+  const hook = () => {
+    console.log('effect')
+    axios
+    .get('http://localhost:3003/notes')
+    .then(response => {
+      console.log('promise fulfilled')
+      setNotes(response.data)
+    })
+  }
+
+  useEffect(hook, [])
+
+  console.log('render', notes.length, 'notes')
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
   
