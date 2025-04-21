@@ -2,8 +2,8 @@ import {useState, useEffect} from 'react'
 import './App.css'
 import axios from 'axios'
 import Note from './components/Notes'
-import noteService from './services/notes '
-import notes from './services/notes'
+import noteService from './services/notes'
+
 
 
 
@@ -12,20 +12,13 @@ const App = () => {
   const [newNote, setNewNote] = useState('a new note...')
   const [showAll, setShowAll] = useState(true)
 
-  const hook = () => {
-    console.log('effect')
-    axios
-    .get('http://localhost:3003/notes')
-    .then(response => {
-      console.log('promise fulfilled')
-      setNotes(response.data)
-    })
-  }
 
   useEffect(() => {
     noteService
-    .getAll()
-    .then(response => setNotes(response.data))
+      .getAll()
+      .then(initialNotes => {
+        setNotes(initialNotes)
+      })
   }
     , [])
 
@@ -37,13 +30,13 @@ const App = () => {
     const note = notes.find(note => note.id === id)
     const changedNote = {...note, important: !note.important}
 
-    noteService.update(id, changedNote).then(response => {
-      setNotes(notes.map( note => { id === note.id ? response.data : note }))
-    })
+    noteService.update(id, changedNote).then(returnedNote => {
+      setNotes(notes.map( note => id === note.id ? returnedNote : note ))})
+      .catch(error => {
+        alert('This note has already been deleted from the server')
+        setNotes(notes.filter(n => n.id !== id))
+      })
 
-    axios.patch(url, changedNote).then(response => {
-      setNotes(notes.map(note => id === note.id ? response.data : note))
-    })
   }
 
   const notesToShow = showAll ? notes : notes.filter(note => note.important)
@@ -55,13 +48,14 @@ const App = () => {
       important: Math.random() < 0.5,
     }
 
-    axios
-      .post('http://localhost:3003/notes', noteObject)
-      .then(response => {
-        console.log(response)
-        setNotes(notes.concat(response.data))
+    noteService
+      .create(noteObject)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
         setNewNote('')
       })
+
+
 
   }
 
