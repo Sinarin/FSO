@@ -27,8 +27,11 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       alert(message)
     } else{
-      setPersons(persons.concat({ name : newName, number: newNumber, id : String(persons.length + 1)}))
-      setNumber
+      axios.post('http://localhost:3003/persons', {name : newName, number: newNumber})
+      .then(response => setPersons(persons.concat(response.data)))
+      
+      //setPersons(persons.concat({ name : newName, number: newNumber, id : String(persons.length + 1)}))
+      //setNumber
     }
     }
 
